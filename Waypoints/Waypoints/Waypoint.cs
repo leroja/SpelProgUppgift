@@ -28,10 +28,10 @@ namespace Waypoints
 
         // the text we display on screen, created here to make our Draw method cleaner
         private const string helpText =
-            "Use the arrow keys to move the cursor\n" +
-            "Press A to place a waypoint\n" +
-            "Press B to change steering behavior\n" +
-            "Press X to reset the tank and waypoints\n";
+            "Use the Mosue to move the cursor\n" +
+            "Press Left Mouse Botton to place a waypoint\n" +
+            "Press Right Mouse Button to change steering behavior\n" +
+            "Press Middle Mouse Button to reset the tank and waypoints\n";
 
         #endregion
 
@@ -56,6 +56,8 @@ namespace Waypoints
         GamePadState previousGamePadState;
         KeyboardState currentKeyboardState;
         GamePadState currentGamePadState;
+        MouseState currentMouseState;
+        MouseState previousMouseState;
 
         // The waypoint-following tank
         Tank tank;
@@ -76,6 +78,7 @@ namespace Waypoints
             graphics.PreferredBackBufferWidth = screenWidth;
             graphics.PreferredBackBufferHeight = screenHeight;
 
+            //this.IsMouseVisible = true;
 
             tank = new Tank(this);
             Components.Add(tank);
@@ -190,8 +193,10 @@ namespace Waypoints
         {
             previousGamePadState = currentGamePadState;
             previousKeyboardState = currentKeyboardState;
+            previousMouseState = currentMouseState;
             currentGamePadState = GamePad.GetState(PlayerIndex.One);
             currentKeyboardState = Keyboard.GetState();
+            currentMouseState = Mouse.GetState();
 
             // Allows the game to exit
             if (currentGamePadState.Buttons.Back == ButtonState.Pressed ||
@@ -201,70 +206,73 @@ namespace Waypoints
             // Update the cursor location by listening for left thumbstick input on
             // the GamePad and direction key input on the Keyboard, making sure to
             // keep the cursor inside the screen boundary
-            cursorLocation.X +=
-                currentGamePadState.ThumbSticks.Left.X * cursorMoveSpeed * elapsedTime;
-            cursorLocation.Y -=
-                currentGamePadState.ThumbSticks.Left.Y * cursorMoveSpeed * elapsedTime;
 
-            if (currentKeyboardState.IsKeyDown(Keys.Up))
-            {
-                cursorLocation.Y -= elapsedTime * cursorMoveSpeed;
-            }
-            if (currentKeyboardState.IsKeyDown(Keys.Down))
-            {
-                cursorLocation.Y += elapsedTime * cursorMoveSpeed;
-            }
-            if (currentKeyboardState.IsKeyDown(Keys.Left))
-            {
-                cursorLocation.X -= elapsedTime * cursorMoveSpeed;
-            }
-            if (currentKeyboardState.IsKeyDown(Keys.Right))
-            {
-                cursorLocation.X += elapsedTime * cursorMoveSpeed;
-            }
+            //cursorLocation.X +=
+            //    currentGamePadState.ThumbSticks.Left.X * cursorMoveSpeed * elapsedTime;
+            //cursorLocation.Y -=
+            //    currentGamePadState.ThumbSticks.Left.Y * cursorMoveSpeed * elapsedTime;
+
+            //if (currentKeyboardState.IsKeyDown(Keys.Up))
+            //{
+            //    cursorLocation.Y -= elapsedTime * cursorMoveSpeed;
+            //}
+            //if (currentKeyboardState.IsKeyDown(Keys.Down))
+            //{
+            //    cursorLocation.Y += elapsedTime * cursorMoveSpeed;
+            //}
+            //if (currentKeyboardState.IsKeyDown(Keys.Left))
+            //{
+            //    cursorLocation.X -= elapsedTime * cursorMoveSpeed;
+            //}
+            //if (currentKeyboardState.IsKeyDown(Keys.Right))
+            //{
+            //    cursorLocation.X += elapsedTime * cursorMoveSpeed;
+            //}
+            cursorLocation = currentMouseState.Position.ToVector2();
 
             cursorLocation.X = MathHelper.Clamp(cursorLocation.X, 0f, screenWidth);
             cursorLocation.Y = MathHelper.Clamp(cursorLocation.Y, 0f, screenHeight);
 
             // Change the tank move behavior if the user pressed B on
             // the GamePad or on the Keyboard.
-            if ((previousGamePadState.Buttons.B == ButtonState.Released &&
-                currentGamePadState.Buttons.B == ButtonState.Pressed) ||
-                (previousKeyboardState.IsKeyUp(Keys.B) &&
-                currentKeyboardState.IsKeyDown(Keys.B))
-
-        )
+            //if ((previousGamePadState.Buttons.B == ButtonState.Released &&
+            //    currentGamePadState.Buttons.B == ButtonState.Pressed) ||
+            //    (previousKeyboardState.IsKeyUp(Keys.B) &&
+            //    currentKeyboardState.IsKeyDown(Keys.B)))
+            //{
+            //    tank.CycleBehaviorType();
+            //}
+            if (currentMouseState.RightButton == ButtonState.Pressed && previousMouseState.RightButton == ButtonState.Released)
             {
                 tank.CycleBehaviorType();
-
-
             }
 
             // Add the cursor's location to the WaypointList if the user pressed A on
             // the GamePad or on the Keyboard.
-            if ((previousGamePadState.Buttons.A == ButtonState.Released &&
-                currentGamePadState.Buttons.A == ButtonState.Pressed) ||
-                (previousKeyboardState.IsKeyUp(Keys.A) &&
-                currentKeyboardState.IsKeyDown(Keys.A))
-
-        )
+            //if ((previousGamePadState.Buttons.A == ButtonState.Released &&
+            //    currentGamePadState.Buttons.A == ButtonState.Pressed) ||
+            //    (previousKeyboardState.IsKeyUp(Keys.A) &&
+            //    currentKeyboardState.IsKeyDown(Keys.A)))
+            //{
+            //    tank.Waypoints.Enqueue(cursorLocation);
+            //}
+            if (currentMouseState.LeftButton == ButtonState.Pressed && previousMouseState.LeftButton == ButtonState.Released)
             {
                 tank.Waypoints.Enqueue(cursorLocation);
             }
 
             // Delete all the current waypoints and reset the tanks’ location if 
             // the user pressed X on the GamePad or on the Keyboard.
-            if ((previousGamePadState.Buttons.X == ButtonState.Released &&
-                currentGamePadState.Buttons.X == ButtonState.Pressed) ||
-                (previousKeyboardState.IsKeyUp(Keys.X) &&
-                currentKeyboardState.IsKeyDown(Keys.X))
-
-        )
+            //if ((previousGamePadState.Buttons.X == ButtonState.Released &&
+            //    currentGamePadState.Buttons.X == ButtonState.Pressed) ||
+            //    (previousKeyboardState.IsKeyUp(Keys.X) &&
+            //    currentKeyboardState.IsKeyDown(Keys.X)))
+            //{
+            //    tank.Reset(new Vector2((float)screenWidth / 4, (float)screenHeight / 4));
+            //}
+            if (currentMouseState.MiddleButton == ButtonState.Pressed && previousMouseState.MiddleButton == ButtonState.Released)
             {
-                tank.Reset(
-                    new Vector2((float)screenWidth / 4, (float)screenHeight / 4));
-
-
+                tank.Reset(new Vector2((float)screenWidth / 4, (float)screenHeight / 4));
             }
         }
 
