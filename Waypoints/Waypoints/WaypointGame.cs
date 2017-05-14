@@ -8,7 +8,7 @@ namespace Waypoints
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Waypoint : Game
+    public class WaypointGame : Game
     {
         #region Constants
 
@@ -68,7 +68,7 @@ namespace Waypoints
         /// <summary>
         /// Construct a WaypointSample object
         /// </summary>
-        public Waypoint()
+        public WaypointGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -136,11 +136,6 @@ namespace Waypoints
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
-            // TODO: Add your update logic here
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             HandleInput(elapsedTime);

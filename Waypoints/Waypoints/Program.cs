@@ -14,7 +14,7 @@ namespace Waypoints
         [STAThread]
         static void Main()
         {
-            using (var game = new Waypoint())
+            using (var game = new WaypointGame())
                 game.Run();
         }
     }
